@@ -1,14 +1,7 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn import datasets, neighbors, metrics, mixture, svm
-from sklearn.model_selection import train_test_split, GridSearchCV
-
-# 1 Importing all the required libraries.
-'''And ensuring all the required packages are installed.'''
+import time
 import tkinter as tk
 from tkinter import *
-from sklearn import datasets, neighbors, metrics
+from sklearn import datasets, neighbors, metrics, svm
 from sklearn.model_selection import train_test_split, GridSearchCV, validation_curve
 import matplotlib.pyplot as plt
 import numpy as np
@@ -246,6 +239,27 @@ def fn_cv_score(dataset, classifier, fold):
     return 0
 
 
+def save_as(object_in, filename):
+    f = None
+    try:
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        f = open('output/' + str(filename) + '_' + timestr + '.txt', "w")
+        for item in object_in:
+            # write each item on a new line
+            f.write("%s\n" % str(item))
+    except Exception as ex:
+        # incase the file is empty
+        print(ex.args)
+    finally:
+        if f:
+            f.close()
+
+
+def my_print(object_in, a):
+    object_in.append(a)
+    print(a)
+
+
 # 10 Function for plotting the confusion matrix with accuracy percentage.
 '''The function takes the dataset,classifier and parameter as input.
  The function also runs the GridsearchCV on the training set after splitting the data
@@ -288,16 +302,17 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
 
     # Get parameter values, scores (accuracies) and best parameter from this gscv_classifier classifier
 
-    print("---------------------------------Plot_confusion_matrix ----------------------------")
-    print("Grid scores on validation set:")
+    object_in = []
+    my_print(object_in, "---------------------------------Best_Parameters ----------------------------")
+
+    my_print(object_in, "Grid scores on validation set:")
     means = gscv_classifier.cv_results_['mean_test_score']
     stds = gscv_classifier.cv_results_['std_test_score']
     results = gscv_classifier.cv_results_['params']
     for mean, std, param in zip(means, stds, results):
-        print("Parameter: %r, accuracy: %0.3f (+/-%0.03f)" % (param, mean, std * 2))
-    print()
+        my_print(object_in, "Parameter: %r, accuracy: %0.3f (+/-%0.03f)" % (param, mean, std * 2))
 
-    print("Best parameter:", gscv_classifier.best_params_)
+    my_print(object_in, '{0} and {1}'.format('Best parameter:', gscv_classifier.best_params_))
 
     # This gscv_classifier classifier now applies the best parameter, so we just use it to test the testing dataset
 
@@ -309,7 +324,7 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
     plotcm = metrics.plot_confusion_matrix(gscv_classifier, X_test, y_test, display_labels=class_names)
     plotcm.ax_.set_title('Accuracy = {0:.2f}%'.format(accuracy))
     plt.show()
-
+    save_as(object_in, 'best_parameters')
 
 # 12 Function to execute the run button.
 '''The run button takes the command as the lambda function carrying the value of 3 variables var1,2,3 for selecting
