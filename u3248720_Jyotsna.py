@@ -9,6 +9,10 @@ from warnings import simplefilter
 
 
 # 1 Function for creating the base window containing title and fonts
+'''The function takes the tk main window and its dimensions as input.
+ It defines the main header label along with the required fonts'''
+
+
 def frame_formatter(window, dimensions):
     window.title('Prog for Data Science')
     # width x height + x_offset + y_offset:
