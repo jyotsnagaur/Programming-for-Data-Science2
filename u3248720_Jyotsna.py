@@ -1,12 +1,13 @@
 import time
 import tkinter as tk
 from tkinter import *
-from sklearn import datasets, neighbors, metrics, svm
-from sklearn.model_selection import train_test_split, GridSearchCV, validation_curve
+from tkinter.messagebox import showinfo
+from warnings import simplefilter
+
 import matplotlib.pyplot as plt
 import numpy as np
-from warnings import simplefilter
-from tkinter.messagebox import showinfo
+from sklearn import datasets, neighbors, metrics, svm
+from sklearn.model_selection import train_test_split, GridSearchCV, validation_curve
 
 # 1 Function for creating the base window containing title and fonts
 '''The function takes the tk main window and its dimensions as input.
@@ -79,7 +80,7 @@ def frame_one(window, myfont):
     return var
 
 
-# 4 Function for selecting the classifier and getting the classifier as an object type.
+# 4 Functions for selecting the classifier and then getting the classifier as an object type.
 '''The input is the variable value taken by the radio buttons defined in next step.
 The function outputs the classifier as output1'''
 
@@ -242,13 +243,13 @@ def fn_cv_score(dataset, classifier, fold):
                      mean_test_score + std_test_score, alpha=0.2,
                      color='g', lw=2)
 
-    # Creating the plot
+    # Creating the plot specifying the labels,layout and legend
     plt.title('Validation Curve with {} Classifier'.format(y_name))
     plt.xlabel("Parameter")
     plt.ylabel("Accuracy")
     plt.tight_layout()
     plt.legend(loc='best')
-    plt.show()
+    plt.show(block=False)
 
 
 # 9 Function to save metrics in output folder in txt file.
@@ -337,11 +338,11 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
     accuracy = metrics.accuracy_score(y_test, y_pred) * 100
     plotcm = metrics.plot_confusion_matrix(gscv_classifier, X_test, y_test, display_labels=class_names)
     plotcm.ax_.set_title('Accuracy = {0:.2f}%'.format(accuracy))
-    plt.show()
+    plt.show(block=False)
     save_as(object_in, 'best_parameters')
 
 
-# 12 Function to execute the run button.
+# 12 Function to execute the run button and handle exceptions.
 '''The run button takes the command as the lambda function carrying the value of 3 variables var1,2,3 for selecting
  dataset,classifier and k-fold.
  The values are then fed to functions for plotting cv score(defined in step 9)
@@ -351,6 +352,7 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
 def run(var, var1, var2):
     # init dataset, classifier, parameter
     try:
+        plt.close('all')
         if var.get() == "" or var1.get() == "" or var2.get() == "":
             showinfo(title='Information', message='Please click on a valid option')
         else:
