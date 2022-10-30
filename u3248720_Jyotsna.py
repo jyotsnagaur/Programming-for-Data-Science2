@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from warnings import simplefilter
 
-
 # 1 Function for creating the base window containing title and fonts
 '''The function takes the tk main window and its dimensions as input.
  It defines the main header label along with the required fonts'''
@@ -87,9 +86,9 @@ def select_c(var1):
 def get_classifier(selected):
     output1 = ''
     if selected == 'c1':
-        output1 = neighbors.KNeighborsClassifier()  # 'kNN classifier'
+        output1 = neighbors.KNeighborsClassifier()  # 'kNN classifier taken from sklearn'
     elif selected == 'c2':
-        output1 = svm.SVC()
+        output1 = svm.SVC()  # 'SVM classifier taken from sklearn'
     return output1
 
 
@@ -197,8 +196,10 @@ def fn_cv_score(dataset, classifier, fold):
     # Setting the parameter name
     if classifier == 'c1':
         p_name = 'n_neighbors'
+        y_name = 'kNN'
     elif classifier == 'c2':
         p_name = 'C'
+        y_name = 'SVM'
 
     # Calculate accuracy on training and test set using the
     # selected parameter with k-fold cross validation
@@ -210,12 +211,15 @@ def fn_cv_score(dataset, classifier, fold):
     std_train_score = np.std(train_score, axis=1)
 
     # Plot mean accuracy scores for training scores
-    train_dash_line_high = mean_train_score + std_train_score
-    train_dash_line_low = mean_train_score - std_train_score
+    # train_dash_line_high = mean_train_score + std_train_score
+    # train_dash_line_low = mean_train_score - std_train_score
 
     plt.plot(parameter_range, mean_train_score, label="Training Score", color='b')
-    plt.plot(parameter_range, train_dash_line_high, color='b', linestyle='dashed')
-    plt.plot(parameter_range, train_dash_line_low, color='b', linestyle='dashed')
+    # plt.plot(parameter_range, train_dash_line_high, color='b', linestyle='dashed')
+    # plt.plot(parameter_range, train_dash_line_low, color='b', linestyle='dashed')
+    plt.fill_between(parameter_range, mean_train_score - std_train_score,
+                     mean_train_score + std_train_score, alpha=0.2,
+                     color='b', lw=2)
 
     # Calculating mean and standard deviation of testing score
     mean_test_score = np.mean(test_score, axis=1)
@@ -223,18 +227,18 @@ def fn_cv_score(dataset, classifier, fold):
 
     plt.plot(parameter_range, mean_test_score, label="Cross Validation Score", color='g')
 
-    test_dash_line_high = mean_test_score + std_test_score
-    test_dash_line_low = mean_test_score - std_test_score
+    # Creating standard deviation lines of testing score
+    # test_dash_line_high = mean_test_score + std_test_score
+    # test_dash_line_low = mean_test_score - std_test_score
 
-    plt.plot(parameter_range, test_dash_line_high, color='g', linestyle='dashed')
-    plt.plot(parameter_range, test_dash_line_low, color='g', linestyle='dashed')
-    # plt.plot(parameter_range, std_train_score,
-    #    label = "std_train_score", color = 'r')
-    # plt.plot(parameter_range, std_test_score,
-    #    label = "std_test_score", color = 'y')
+    # plt.plot(parameter_range, test_dash_line_high, color='g', linestyle='dashed')
+    # plt.plot(parameter_range, test_dash_line_low, color='g', linestyle='dashed')
+    plt.fill_between(parameter_range, mean_test_score - std_test_score,
+                     mean_test_score + std_test_score, alpha=0.2,
+                     color='g', lw=2)
 
     # Creating the plot
-    plt.title("Validation Curve with KNN Classifier")
+    plt.title('Validation Curve with {} Classifier'.format(y_name))
     plt.xlabel("Parameter")
     plt.ylabel("Accuracy")
     plt.tight_layout()
@@ -247,7 +251,7 @@ def save_as(object_in, filename):
     f = None
     try:
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        f = open('output/' + str(filename) + '_' + timestr + '.txt', "w")
+        f = open('output/' + str(filename) + '_' + timestr + '.txt', "w")  # save txt with timestamp
         for item in object_in:
             # write each item on a new line
             f.write("%s\n" % str(item))
@@ -283,13 +287,13 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
     parameter1 = []
 
     if classifier == 'c1':
-        parameter1 = [{'n_neighbors': [1, 2, 3, 4, 5]}] # parameter 'n_neighbors' is taken for kNN according to sklearn
+        parameter1 = [{'n_neighbors': [1, 2, 3, 4, 5]}]  # parameter 'n_neighbors' is taken for kNN according to sklearn
     elif classifier == 'c2':
         parameter1 = [{'C': [0.5, 0.1, 1, 5, 10]}]  # parameter 'C' is taken for svm.SVC() according to sklearn docs
 
     # Split the dataset into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=0)
+        X, y, test_size=0.2, random_state=0)  # splitting into 80% train, 20% test
     # load grid search cross validation function for parameter estimation
     gscv_classifier = GridSearchCV(
         estimator=obj_classifier,
