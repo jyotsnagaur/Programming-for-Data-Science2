@@ -13,14 +13,15 @@ def frame_formatter(window, dimensions):
     window.title('Prog for Data Science')
     # width x height + x_offset + y_offset:
     window.geometry(dimensions)
+
     # Set font
     myfont = "Arial, 9"
-    myfont1 = "Arial, 12"
+    myfont1 = "Arial, 20"
     lbl_header = tk.Label(window, text="CLASSIFICATION OF DATASETS USING ML", fg="white", bg="darkblue",
-                          font=myfont1)
-    # lbl_header.pack()
-    lbl_header.grid(row=0, column=0)
-    return myfont
+                          font=myfont1, height=4)
+    lbl_header.pack()
+
+    return myfont  # myfont is being used in other frames hence we need it out of this function
 
 
 # 2 Function for selecting the dataset.
@@ -49,9 +50,9 @@ The function outputs the variable with value i,b,w for the above function for lo
 def frame_one(window, myfont):
     # Create frame 1 for dataset
     frame_1 = LabelFrame(window, text="Choose Dataset...", padx=5, pady=5)
-    # frame_1.pack(padx=20, pady=20)
+    frame_1.pack(padx=20, pady=20)
     # frame_1.place(x=20,y=140)
-    frame_1.grid(row=3, column=0)
+    # frame_1.grid(row=3, column=0)
     # Add variable var and 3 radio buttons
     var = tk.StringVar()
     var.set(None)
@@ -70,7 +71,7 @@ def frame_one(window, myfont):
     return var
 
 
-# 4 Function for selecting the classifier.
+# 4 Function for selecting the classifier and getting the classifier as an object type.
 '''The input is the variable value taken by the radio buttons defined in next step.
 The function outputs the classifier as output1'''
 
@@ -96,9 +97,9 @@ def get_classifier(selected):
 def frame_two(window, myfont):
     # Create frame 2 for classifier
     frame_2 = LabelFrame(window, text="Choose Classifier...", padx=5, pady=5)
-    # frame_2.pack(padx=20, pady=20)
+    frame_2.pack(padx=20, pady=20)
     # frame_2.place(x=20,y=290)
-    frame_2.grid(row=4, column=0)
+    # frame_2.grid(row=4, column=0)
     # Add variable var and 2 radio buttons
     var1 = tk.StringVar()
     var1.set(None)
@@ -141,9 +142,9 @@ def select_k(var2):
 def frame_three(window, myfont):
     # Create frame 3 for cv folds
     frame_3 = LabelFrame(window, text="Choose k-Folds...", padx=5, pady=5)
-    # frame_3.pack(padx=20, pady=20)
+    frame_3.pack(padx=20, pady=20)
     # frame_3.place(x=20,y=400)
-    frame_3.grid(row=5, column=0)
+    # frame_3.grid(row=5, column=0)
     # Add variable var and 4 radio buttons
     var2 = tk.StringVar()
     var2.set(None)
@@ -237,8 +238,7 @@ def fn_cv_score(dataset, classifier, fold):
     plt.show()
 
 
-
-# 9 Function to save metrics in output file in txt file.
+# 9 Function to save metrics in output folder in txt file.
 def save_as(object_in, filename):
     f = None
     try:
@@ -267,7 +267,7 @@ def my_print(object_in, a):
 
 
 def fn_plot_confusion_matrix(dataset, classifier, fold):
-    # ignore all future warnings
+    # ignore all future warnings regarding module package updates
     simplefilter(action='ignore', category=FutureWarning)
 
     # Loading a dataset
@@ -366,25 +366,16 @@ def main():
     # Add Run button
     run_button = tk.Button(window, text="Run", fg="white", bg="darkblue", width=10, height=1, font=myfont,
                            command=lambda: run(dataset, classifier, fold))
-    # run_button.pack(padx=20, pady=20)
+    run_button.pack(padx=5, pady=5)
     # run_button.place(x=20, y=580)
-    run_button.grid(row=6, column=0)
+    # run_button.grid(row=6, column=0)
 
     # Add exit button
     exit_button = Button(window, text="Exit", fg="white", bg="darkblue", width=10, height=1, font=myfont,
                          command=window.destroy)
-    # exit_button.pack(padx=20, pady=20)
+    exit_button.pack(padx=5, pady=5)
     # exit_button.place(x=150, y=580)
-    exit_button.grid(row=7, column=0)
-
-    # dummy frame 4
-    four_button = tk.Button(text="F4", fg="white", bg="darkblue", width=10, height=1, font=myfont)
-    four_button.place(x=300, y=580)
-    four_button.grid(row=3, column=1, rowspan=5)
-    # dummy frame 5
-    five_button = tk.Button(text="F5", fg="white", bg="darkblue", width=10, height=1, font=myfont)
-    five_button.place(x=650, y=580)
-    five_button.grid(row=3, column=2, rowspan=5)
+    # exit_button.grid(row=7, column=0)
 
     # loop again for new inputs / persistence
     window.mainloop()
