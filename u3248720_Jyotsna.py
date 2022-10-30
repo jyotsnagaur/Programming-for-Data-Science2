@@ -8,7 +8,7 @@ import numpy as np
 from warnings import simplefilter
 
 
-# 2 Function for creating the base window containing title and fonts
+# 1 Function for creating the base window containing title and fonts
 def frame_formatter(window, dimensions):
     window.title('Prog for Data Science')
     # width x height + x_offset + y_offset:
@@ -23,7 +23,7 @@ def frame_formatter(window, dimensions):
     return myfont
 
 
-# 3 Function for selecting the dataset.
+# 2 Function for selecting the dataset.
 '''The input is the variable value taken by the radio buttons defined in next step.
 The function outputs the loaded dataset'''
 
@@ -41,7 +41,7 @@ def select_d(var):
     return output
 
 
-# 4 Function for creating frame 1 with radio buttons for selecting the dataset.
+# 3 Function for creating frame 1 with radio buttons for selecting the dataset.
 '''The radio buttons for selecting dataset are contained in frame 1.
 The function outputs the variable with value i,b,w for the above function for loading dataset'''
 
@@ -70,7 +70,7 @@ def frame_one(window, myfont):
     return var
 
 
-# 5 Function for selecting the classifier.
+# 4 Function for selecting the classifier.
 '''The input is the variable value taken by the radio buttons defined in next step.
 The function outputs the classifier as output1'''
 
@@ -88,7 +88,7 @@ def get_classifier(selected):
     return output1
 
 
-# 6 Function for creating frame 2 with radio buttons for selecting the classifier.
+# 5 Function for creating frame 2 with radio buttons for selecting the classifier.
 '''The radio buttons for selecting classifier are contained in frame 2.
  The function outputs the variable with value c1,c2 for the above function for giving classifier as output'''
 
@@ -113,7 +113,7 @@ def frame_two(window, myfont):
     return var1
 
 
-# 7 Function for selecting the k value for cross validation.
+# 6 Function for selecting the k value for cross validation.
 '''The input is the variable value taken by the radio buttons defined in next step.
  The function outputs the cv value used in GridsearchCV'''
 
@@ -133,7 +133,7 @@ def select_k(var2):
     return output2
 
 
-# 8 Function for creating frame 3 with radio buttons for selecting the number of folds for cross validation.
+# 7 Function for creating frame 3 with radio buttons for selecting the number of folds for cross validation.
 '''The radio buttons for selecting k-folds are contained in frame 3.
  The function outputs the variable with value k3,k5,k7,k10 for the above function for giving cv as output'''
 
@@ -166,7 +166,7 @@ def frame_three(window, myfont):
     return var2
 
 
-# 9 Function for plotting the cv score/accuracy vs parameter(which is n_neighbours for k-nearest neighbour
+# 8 Function for plotting the cv score/accuracy vs parameter(which is n_neighbours for k-nearest neighbour
 # and C for SVM).
 '''The function takes the dataset,classifier and parameter as input.
  The function outputs the graph between accuracy/cv score and parameter using matplotlib imported as plt in step 1'''
@@ -179,7 +179,6 @@ def fn_cv_score(dataset, classifier, fold):
     # Loading a dataset
     X = dataset.data
     y = dataset.target
-    # class_names = dataset.target_names # TODO:remove if everything ok
 
     # Plot CV SCORE vs parameter
     # Setting the range for the parameter
@@ -208,7 +207,7 @@ def fn_cv_score(dataset, classifier, fold):
     # Plot mean accuracy scores for training scores
     train_dash_line_high = mean_train_score + std_train_score
     train_dash_line_low = mean_train_score - std_train_score
-    # TODO: has to be used somewhare -- std_train_score ; std_test_score
+
     plt.plot(parameter_range, mean_train_score, label="Training Score", color='b')
     plt.plot(parameter_range, train_dash_line_high, color='b', linestyle='dashed')
     plt.plot(parameter_range, train_dash_line_low, color='b', linestyle='dashed')
@@ -236,9 +235,10 @@ def fn_cv_score(dataset, classifier, fold):
     plt.tight_layout()
     plt.legend(loc='best')
     plt.show()
-    return 0
 
 
+
+# 9 Function to save metrics in output file in txt file.
 def save_as(object_in, filename):
     f = None
     try:
@@ -298,9 +298,8 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
 
     gscv_classifier.fit(X_train, y_train)
 
-    # 11 Printing metric results and getting the best parameter in the output folder with text file.
-
-    # Get parameter values, scores (accuracies) and best parameter from this gscv_classifier classifier
+    # 11 Printing metric results and getting the best parameter in the output folder with text file using
+    # save as function in step-9.
 
     object_in = []
     my_print(object_in, "---------------------------------Best_Parameters ----------------------------")
@@ -312,7 +311,8 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
     for mean, std, param in zip(means, stds, results):
         my_print(object_in, "Parameter: %r, accuracy: %0.3f (+/-%0.03f)" % (param, mean, std * 2))
 
-    my_print(object_in, '{0} and {1}'.format('Best parameter:', gscv_classifier.best_params_))
+    my_print(object_in,
+             'Best parameter:{0}'.format(gscv_classifier.best_params_))
 
     # This gscv_classifier classifier now applies the best parameter, so we just use it to test the testing dataset
 
@@ -325,6 +325,7 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
     plotcm.ax_.set_title('Accuracy = {0:.2f}%'.format(accuracy))
     plt.show()
     save_as(object_in, 'best_parameters')
+
 
 # 12 Function to execute the run button.
 '''The run button takes the command as the lambda function carrying the value of 3 variables var1,2,3 for selecting
@@ -339,16 +340,9 @@ def run(var, var1, var2):
     classifier = select_c(var1)
     fold = select_k(var2)
 
-    # call some logic
+    # call to run the functions created above to create cv score graph and confusion matrix.
     fn_cv_score(dataset, classifier, fold)
     fn_plot_confusion_matrix(dataset, classifier, fold)
-
-    # call output
-    # button_clicked(dataset, classifier, parameter)
-    # xx = display_fn1(cv, "frame4")
-    # yy = display_fn2(cm, "frame5")
-    # print(xx)
-    # print(yy)
 
 
 # 13 Function to display the main window with the run button and exit button.
@@ -396,7 +390,7 @@ def main():
     window.mainloop()
 
 
-# 14 Conditional statement to run the main function first as defined above.
+# 14 Conditional statement to run the main function first as defined above in step 13 to run the main window.
 '''It is also a way to store code that should only run when this file is executed as a script not as a module'''
 if __name__ == "__main__":
     main()
