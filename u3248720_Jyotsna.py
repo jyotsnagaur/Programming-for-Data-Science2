@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV, validation_c
 import matplotlib.pyplot as plt
 import numpy as np
 from warnings import simplefilter
+from tkinter.messagebox import showinfo
 
 # 1 Function for creating the base window containing title and fonts
 '''The function takes the tk main window and its dimensions as input.
@@ -20,9 +21,13 @@ def frame_formatter(window, dimensions):
     # Set font
     myfont = "Arial, 9"
     myfont1 = "Arial, 20"
-    lbl_header = tk.Label(window, text="CLASSIFICATION OF DATASETS USING MACHINE LEARNING", fg="white", bg="darkblue",
+    lbl_header = tk.Label(window, text="PROGRAMMING FOR DATA SCIENCE ASSIGNMENT - 2 : CLASSIFICATION OF DATASETS USING MACHINE LEARNING", fg="white", bg="darkblue",
                           font=myfont1, height=4)
+    lbl_header1 = tk.Label(window, text="Note: Output of Best parameters and training accuracy stored in text file in"
+                                        " output folder after executing", fg="darkblue",
+                          font=myfont)
     lbl_header.pack()
+    lbl_header1.pack()
 
     return myfont  # myfont is being used in other frames hence we need it out of this function
 
@@ -293,7 +298,7 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
 
     # Split the dataset into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=0)  # splitting into 80% train, 20% test,
+        X, y, test_size=0.2, random_state=0, stratify= dataset.target)  # splitting into 80% train, 20% test,
     # Both test size and random state influence the testing accuracy% in accuracy
     # load grid search cross validation function for parameter estimation
     gscv_classifier = GridSearchCV(
@@ -345,14 +350,24 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
 
 def run(var, var1, var2):
     # init dataset, classifier, parameter
+    try:
+        if var.get() == "" or var1.get() == "" or var2.get() == "":
+            showinfo(title='Information', message='Please click on a valid option')
+        else:
+            dataset = select_d(var)
+            classifier = select_c(var1)
+            fold = select_k(var2)
+            # call to run the functions created above to create cv score graph and confusion matrix.
+            fn_cv_score(dataset, classifier, fold)
+            fn_plot_confusion_matrix(dataset, classifier, fold)
 
-    dataset = select_d(var)
-    classifier = select_c(var1)
-    fold = select_k(var2)
+    except Exception as ex:
+        print(ex.args)
+        showinfo(title='Information', message='Please click on a valid option')
 
-    # call to run the functions created above to create cv score graph and confusion matrix.
-    fn_cv_score(dataset, classifier, fold)
-    fn_plot_confusion_matrix(dataset, classifier, fold)
+
+
+
 
 
 # 13 Function to display the main window with the run button and exit button.
@@ -372,6 +387,7 @@ def main():
     dataset = frame_one(window, myfont)
     classifier = frame_two(window, myfont)
     fold = frame_three(window, myfont)
+
 
     # Add Run button
     run_button = tk.Button(window, text="Run", fg="white", bg="darkblue", width=10, height=1, font=myfont,
