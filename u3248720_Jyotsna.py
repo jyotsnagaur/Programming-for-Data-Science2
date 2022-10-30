@@ -132,7 +132,7 @@ def select_k(var2):
     elif selected == 'k7':
         output2 = 7
     elif selected == 'k10':
-        output2 = 10
+        output2 = 10   # taken as 10 according too sklearn documentation
     # lb3_output2.config(text=output2)
     return output2
 
@@ -214,7 +214,7 @@ def fn_cv_score(dataset, classifier, fold):
     # train_dash_line_high = mean_train_score + std_train_score
     # train_dash_line_low = mean_train_score - std_train_score
 
-    plt.plot(parameter_range, mean_train_score, label="Training Score", color='b')
+    plt.plot(parameter_range, mean_train_score, label="Mean Training Score", color='b')
     # plt.plot(parameter_range, train_dash_line_high, color='b', linestyle='dashed')
     # plt.plot(parameter_range, train_dash_line_low, color='b', linestyle='dashed')
     plt.fill_between(parameter_range, mean_train_score - std_train_score,
@@ -225,7 +225,7 @@ def fn_cv_score(dataset, classifier, fold):
     mean_test_score = np.mean(test_score, axis=1)
     std_test_score = np.std(test_score, axis=1)
 
-    plt.plot(parameter_range, mean_test_score, label="Cross Validation Score", color='g')
+    plt.plot(parameter_range, mean_test_score, label="Mean Cross Validation Score", color='g')
 
     # Creating standard deviation lines of testing score
     # test_dash_line_high = mean_test_score + std_test_score
@@ -293,7 +293,8 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
 
     # Split the dataset into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=0)  # splitting into 80% train, 20% test
+        X, y, test_size=0.2, random_state=0)  # splitting into 80% train, 20% test,
+    # Both test size and random state influence the testing accuracy% in accuracy
     # load grid search cross validation function for parameter estimation
     gscv_classifier = GridSearchCV(
         estimator=obj_classifier,
@@ -344,6 +345,7 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
 
 def run(var, var1, var2):
     # init dataset, classifier, parameter
+
     dataset = select_d(var)
     classifier = select_c(var1)
     fold = select_k(var2)
