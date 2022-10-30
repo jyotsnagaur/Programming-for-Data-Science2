@@ -21,7 +21,7 @@ def frame_formatter(window, dimensions):
     # Set font
     myfont = "Arial, 9"
     myfont1 = "Arial, 20"
-    lbl_header = tk.Label(window, text="CLASSIFICATION OF DATASETS USING ML", fg="white", bg="darkblue",
+    lbl_header = tk.Label(window, text="CLASSIFICATION OF DATASETS USING MACHINE LEARNING", fg="white", bg="darkblue",
                           font=myfont1, height=4)
     lbl_header.pack()
 
@@ -283,9 +283,9 @@ def fn_plot_confusion_matrix(dataset, classifier, fold):
     parameter1 = []
 
     if classifier == 'c1':
-        parameter1 = [{'n_neighbors': [1, 2, 3, 4, 5]}]
+        parameter1 = [{'n_neighbors': [1, 2, 3, 4, 5]}] # parameter 'n_neighbors' is taken for kNN according to sklearn
     elif classifier == 'c2':
-        parameter1 = [{'C': [0.5, 0.1, 1, 5, 10]}]
+        parameter1 = [{'C': [0.5, 0.1, 1, 5, 10]}]  # parameter 'C' is taken for svm.SVC() according to sklearn docs
 
     # Split the dataset into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(
